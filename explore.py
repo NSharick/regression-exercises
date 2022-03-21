@@ -37,7 +37,7 @@ def get_telco_data():
     return df  
 
 #split the telco data function
-def split_telco_data(df):
+def split_data(df):
     '''
     This function is for splitting the dataset into train, validate, and test 
     and is used in the preparation function below so that all data prep operations 
@@ -70,16 +70,24 @@ def prep_telco(df):
     #rename the payment type columns to remove the "()" for functionality in python script
     df = df.rename(columns={'payment_type_Credit card (automatic)':'pay_credit', 'payment_type_Electronic check': 'pay_elec', 'payment_type_Mailed check': 'pay_mail'})
     #split the data using the above splitting function
-    train, validate, test = split_telco_data(df)
+    train, validate, test = split_data(df)
     #Return the train, validate, and test dataframes
     return train, validate, test
 
 #plot variable pairs function
-def plot_variable_pairs(df):
-    sns.pairplot(df, kind='reg', plot_kws={'line_kws':{'color': 'red'}}, corner=True)
+def plot_variable_pairs(columns):
+    sns.pairplot(columns, kind='reg', plot_kws={'line_kws':{'color': 'red'}}, corner=True)
     return plt.show()  
 
 #tenure months to full tenure years function
 def tenure_full_years(df):
     df['tenure_years'] = (df.tenure / 12).astype(int)
     return df
+
+#plot a categorical variable againt a continuous variable
+def plot_categorical_and_continuous_vars(df, cat_col, cont_col):
+    fig, ax = plt.subplots(ncols=3, figsize=(14, 8))
+    sns.boxplot(x=cat_col, y=cont_col, data=df, ax=ax[0])
+    sns.barplot(x=cat_col, y=cont_col, data=df, ax=ax[1])
+    sns.violinplot(x=cat_col, y=cont_col, data=df, ax=ax[2])
+    return plt.show()
